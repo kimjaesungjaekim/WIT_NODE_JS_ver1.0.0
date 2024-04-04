@@ -1,0 +1,50 @@
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = []
+}
+
+datasource db {
+    provider = "mysql"
+    url      = env("DB_URL")
+}
+
+model MBR_TB {
+    PK       Int      @id @default(autoincrement())
+    EMAIL    String   @unique
+    FRST_NM  String   @unique
+    LAST_NM  String
+    NC_NM    String
+    BRDT     String   @db.Char(6)
+    GNDR     String   @db.Char(1)
+    POINT    Int
+    APRV_YN  String   @db.Char(1)
+    CRT_DT   DateTime
+    SC_TY    String
+    WHDWL_YN String   @db.Char(1)
+    PW       String
+    BOARD    BOARD[]
+}
+
+model BOARD {
+    id          Int         @id @default(autoincrement())
+    title       String      @db.VarChar(100)    
+    CONTENT     String      @db.MediumText
+    WRITE_DAY   DateTime     
+    UPDATE_AT   DateTime      
+    HIT         Int
+    BOARD_USE   String
+    mbrTb       MBR_TB      @relation(fields: [user_id],references: [EMAIL])
+    user_id     String      @unique
+    COMMENTS    COMMENTS[]
+}
+
+model COMMENTS{
+    COMM_ID         Int     @id @default(autoincrement())
+    COMM_CONTENT    String  @db.LongText
+    COMM_WRITE_DAY  DateTime
+    COMM_HEART      String
+    COMM_USE        String
+    board           BOARD   @relation(fields: [BO_NO],references: [id])
+    BO_NO           Int     
+}
+
