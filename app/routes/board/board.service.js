@@ -5,11 +5,10 @@ export const createBoard = async (input) => {
     console.log("input :", input);
     const title = input.TITLE ;
     const CONTENT =input.CONTENT ;
-    const user_id = input.userId;
+    const user_num = input.user_num;
     const WRITE_DAY = new Date();
     const UPDATE_AT = new Date();
     const HIT = 0;
-    const EMAIL = input.userMail;
     const BOARD_USE = "Y";
 
     if (!title) {
@@ -24,9 +23,9 @@ export const createBoard = async (input) => {
             CONTENT,
             WRITE_DAY,
             UPDATE_AT,
-            user_id,
             HIT,
             BOARD_USE,
+            user_num,
         }
         
     });
@@ -34,7 +33,14 @@ export const createBoard = async (input) => {
 };
 
 export const retrieveBoardList = async function() {
-    const boardList = await prisma.bOARD.findMany({});
+    const boardList = await prisma.bOARD.findMany({
+        include:{
+            COMMENTS: true
+        },
+        orderBy:{
+            id : "desc",
+        }
+    });
 
     return boardList;
 }
@@ -44,12 +50,11 @@ export const ModifyBoard = async function(input){
     const title = input.TITLE ;
     const CONTENT =input.CONTENT ;
     const UPDATE_AT = new Date();
-    const idNum = input.idNum;
-
-    const res = await prisma.bOARD.updateMany({
+    const id = input.idNum;
+    const board = await prisma.bOARD.updateMany({
         where:{
             id : {
-                equals: idNum
+                equals: id
             }
         },
         data:{
@@ -59,13 +64,7 @@ export const ModifyBoard = async function(input){
         },
     });
 
-    if(res > 0){
-        result = "게시글이 수정 되었습니다.";
-    }else{
-        result = "게시글 수정 실패";
-    }
-
-    return result;
+    return board;
 }
 
 export const RemoveBoard = async(input)=> {
@@ -80,15 +79,7 @@ export const RemoveBoard = async(input)=> {
         },
     });
 
-    const result = "";
-
-    if(res > 0){
-        result = "게시글이 삭제 되었습니다.";
-    }else{
-        result = "게시글 삭제 실패";
-    }
-
-    return result;
+    return res;
 }
 
 export const SelectOneBoard = async(input)=> {
@@ -98,6 +89,10 @@ export const SelectOneBoard = async(input)=> {
         where:{
             id : boNum,
         },
+        select:{
+            id : true,
+            COMMENTS : true,
+        }
     });
 
     return bOARD;

@@ -40,6 +40,7 @@ router.post("/board/Modify", async(req,res,next)=>{
     try {
         const res = await ModifyBoard({...req.body, demo:false});
         res.status(201).json({res});
+        
     } catch (error) {
         next(error);
     }

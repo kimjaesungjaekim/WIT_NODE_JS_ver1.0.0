@@ -33,8 +33,8 @@ model BOARD {
     UPDATE_AT   DateTime      
     HIT         Int
     BOARD_USE   String
-    mbrTb       MBR_TB      @relation(fields: [user_id],references: [EMAIL])
-    user_id     String      @unique
+    mbrTb       MBR_TB?      @relation(fields: [user_num],references: [PK] ,onDelete: Cascade)
+    user_num    Int?         
     COMMENTS    COMMENTS[]
 }
 
@@ -42,9 +42,10 @@ model COMMENTS{
     COMM_ID         Int     @id @default(autoincrement())
     COMM_CONTENT    String  @db.LongText
     COMM_WRITE_DAY  DateTime
-    COMM_HEART      String
+    COMM_HEART      Int
     COMM_USE        String
-    board           BOARD   @relation(fields: [BO_NO],references: [id])
-    BO_NO           Int     
+    COMM_SEC        Int
+    board           BOARD?   @relation(fields: [BO_NO],references: [id])
+    BO_NO           Int?     
 }
 
